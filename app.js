@@ -31,10 +31,25 @@ const addTodo = async () => {
 const addTodoBtn = document.getElementById("addTodoBtn")
 addTodoBtn.addEventListener("click", addTodo)
 
+// let getTodos = () => {
+//     onSnapshot(collection(db, "todos"), (snapshot) => {
+//         let todos = [];
+//         snapshot.forEach((doc) => {
+//             // console.log("Document data: ", doc.id, doc.data());
+//             todos.push({...doc.data(), docId : doc.id});
+//         });
+//         console.log("Todos: ", todos); 
+//     });
+// };
+
+// getTodos();
+
+
 let getTodos = () => {
     onSnapshot(collection(db, "todos"), (snapshot) => {
         snapshot.forEach((doc) => {
-            console.log("Document data: ", doc.id, doc.data());
+        let { todo } = doc.data();
+        list.innerHTML += `<li>${todo}</li>` 
         });
     });
 };
