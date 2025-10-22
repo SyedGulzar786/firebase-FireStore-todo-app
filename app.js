@@ -15,9 +15,9 @@ const list = document.getElementById("list")
 const addTodo = async () => {
     const todo = document.getElementById("todo");
 
-    let ref = collection(db, "billbord");
+    let ref = collection(db, "todos");
     await addDoc(ref, {
-        id: increment(1),
+        // id: increment(1),
         todo: todo.value
     })
 
@@ -47,10 +47,19 @@ addTodoBtn.addEventListener("click", addTodo)
 
 let getTodos = () => {
     onSnapshot(collection(db, "todos"), (snapshot) => {
-        snapshot.forEach((doc) => {
-        let { todo } = doc.data();
-        list.innerHTML += `<li>${todo}</li>` 
-        });
+        // console.log(snapshot)
+        list.innerHTML = "";
+        snapshot.docChanges().forEach((change) => {
+            // console.log("change", change)
+            let { todo } = change.doc.data();
+            list.innerHTML += `<li>${todo}</li>`
+            // console.log("change", change.doc.data())
+            console.log("change", change.type)
+        })
+        // snapshot.forEach((doc) => {
+        // let { todo } = doc.data();
+        // list.innerHTML += `<li>${todo}</li>`
+        // });
     });
 };
 
