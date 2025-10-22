@@ -5,7 +5,8 @@ import {
     getDoc,
     collection,
     addDoc,
-    increment
+    increment,
+    onSnapshot
 } from "./firebase.js"
 
 
@@ -25,7 +26,17 @@ const addTodo = async () => {
     console.log("Todo added successfully")
     todo.value = "";
 }
-alert("Firebase Firestore connected successfully")
+// alert("Firebase Firestore connected successfully")
 
 const addTodoBtn = document.getElementById("addTodoBtn")
 addTodoBtn.addEventListener("click", addTodo)
+
+let getTodos = () => {
+    onSnapshot(collection(db, "todos"), (snapshot) => {
+        snapshot.forEach((doc) => {
+            console.log("Document data: ", doc.id, doc.data());
+        });
+    });
+};
+
+getTodos();
