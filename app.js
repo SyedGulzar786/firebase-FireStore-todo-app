@@ -62,5 +62,4 @@ let getTodos = () => {
         // });
     });
 };
-
 getTodos();
