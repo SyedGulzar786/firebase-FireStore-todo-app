@@ -9,7 +9,10 @@ import {
     onSnapshot,
     deleteDoc,
     updateDoc,
-    serverTimestamp
+    serverTimestamp,
+    query,
+    where,
+    orderBy
 } from "./firebase.js"
 
 
@@ -50,7 +53,8 @@ addTodoBtn.addEventListener("click", addTodo)
 
 
 let getTodos = () => {
-    onSnapshot(collection(db, "todos"), (snapshot) => {
+    let q = query(collection(db, "todos"), where("id", "==", 10), orderBy("timestamp","desc"))
+    onSnapshot(q, (snapshot) => {
         // console.log(snapshot)
         list.innerHTML = "";
         snapshot.docChanges().forEach((change) => {
