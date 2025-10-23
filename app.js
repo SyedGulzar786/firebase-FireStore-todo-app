@@ -13,7 +13,8 @@ import {
     query,
     where,
     orderBy,
-    limit
+    limit,
+    startAt
 } from "./firebase.js"
 
 
@@ -52,14 +53,25 @@ addTodoBtn.addEventListener("click", addTodo)
 
 // getTodos();
 
-
+let flag = false;
 let getTodos = () => {
-    let q = query(
+    let arr = [
         collection(db, "todos"),
-        // where("id", "==", 10),
-        // orderBy("timestamp", "desc"),
         orderBy("todo"),
-        // limit(4)
+        limit(2)
+    ]
+    if (flag) {
+        arr.push(startAt("c"))
+    }
+
+    let q = query(
+        // collection(db, "todos"),
+        // // where("id", "==", 10),
+        // // orderBy("timestamp", "desc"),
+        // orderBy("todo"),
+        // startAt("c"),
+        // limit(2)
+        ...arr
     )
     onSnapshot(q, (snapshot) => {
         console.log("snapshot", snapshot)
@@ -81,6 +93,7 @@ let getTodos = () => {
             list.innerHTML += `<li>${todo} <button onclick="deleteTodo('${doc.id}')">Delete</button> <button onclick="updateTodo('${doc.id}')">Update</button> </li>`
         })
     });
+    flag = true;
 };
 getTodos();
 
@@ -106,3 +119,6 @@ let updateTodo = async (id) => {
 }
 
 window.updateTodo = updateTodo; 
+
+const seeMorebtn = document.getElementById("seeMorebtn");
+seeMorebtn.addEventListener("click", getTodos);
