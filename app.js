@@ -14,7 +14,8 @@ import {
     where,
     orderBy,
     limit,
-    startAt
+    startAt,
+    startAfter
 } from "./firebase.js"
 
 
@@ -53,25 +54,25 @@ addTodoBtn.addEventListener("click", addTodo)
 
 // getTodos();
 
-let flag = false;
+let lastDoc ;
 let getTodos = () => {
-    let arr = [
-        collection(db, "todos"),
-        orderBy("todo"),
-        limit(2)
-    ]
-    if (flag) {
-        arr.push(startAt("c"))
-    }
+    // let arr = [
+    //     collection(db, "todos"),
+    //     orderBy("todo"),
+    //     limit(2)
+    // ]
+    // if (flag) {
+    //     arr.push(startAt("c"))
+    // }
 
     let q = query(
-        // collection(db, "todos"),
-        // // where("id", "==", 10),
+        collection(db, "todos"),
+        // where("id", "==", 10),
         // // orderBy("timestamp", "desc"),
-        // orderBy("todo"),
+        orderBy("todo"),
         // startAt("c"),
-        // limit(2)
-        ...arr
+        limit(2)
+        // ...arr
     )
     onSnapshot(q, (snapshot) => {
         console.log("snapshot", snapshot)
@@ -87,13 +88,17 @@ let getTodos = () => {
         // let { todo } = doc.data();
         // list.innerHTML += `<li>${todo}</li>`
         // });
+        let arr = [];
         snapshot.forEach((doc) => {
             let { todo, timestamp } = doc.data();
+            arr.push(doc.data())
             console.log("timestamp", new Date(timestamp.toDate()));
             list.innerHTML += `<li>${todo} <button onclick="deleteTodo('${doc.id}')">Delete</button> <button onclick="updateTodo('${doc.id}')">Update</button> </li>`
         })
+        // console.log("last", arr[arr.length-1]);
+        lastDoc = arr[arr.length - 1]
     });
-    flag = true;
+    // flag = true;
 };
 getTodos();
 
@@ -118,7 +123,26 @@ let updateTodo = async (id) => {
     console.log("Update todo with id:", id);
 }
 
-window.updateTodo = updateTodo; 
+window.updateTodo = updateTodo;
 
+let seeMore = () => {
+    let q = query(
+        collection(db, "todos"),
+        orderBy("todo"),
+        limit(2),
+        startAfter(lastDoc.todo)
+    )
+    onSnapshot(q, (snapshot) => {
+        console.log("snapshot", snapshot)
+        let arr = [];
+        snapshot.forEach((doc) => {
+            let { todo, timestamp } = doc.data();
+            arr.push(doc.data())
+            console.log("timestamp", new Date(timestamp.toDate()));
+            list.innerHTML += `<li>${todo} <button onclick="deleteTodo('${doc.id}')">Delete</button> <button onclick="updateTodo('${doc.id}')">Update</button> </li>`
+        })
+        lastDoc = arr[arr.length - 1]
+    });
+}
 const seeMorebtn = document.getElementById("seeMorebtn");
-seeMorebtn.addEventListener("click", getTodos);
+seeMorebtn.addEventListener("click", seeMore);
