@@ -12,7 +12,8 @@ import {
     serverTimestamp,
     query,
     where,
-    orderBy
+    orderBy,
+    limit
 } from "./firebase.js"
 
 
@@ -53,9 +54,15 @@ addTodoBtn.addEventListener("click", addTodo)
 
 
 let getTodos = () => {
-    let q = query(collection(db, "todos"), where("id", "==", 10), orderBy("timestamp","desc"))
+    let q = query(
+        collection(db, "todos"),
+        // where("id", "==", 10),
+        // orderBy("timestamp", "desc"),
+        orderBy("todo"),
+        // limit(4)
+    )
     onSnapshot(q, (snapshot) => {
-        // console.log(snapshot)
+        console.log("snapshot", snapshot)
         list.innerHTML = "";
         snapshot.docChanges().forEach((change) => {
             // console.log("change", change)
