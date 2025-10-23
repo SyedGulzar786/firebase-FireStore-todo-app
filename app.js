@@ -8,7 +8,8 @@ import {
     increment,
     onSnapshot,
     deleteDoc,
-    updateDoc
+    updateDoc,
+    serverTimestamp
 } from "./firebase.js"
 
 
@@ -19,8 +20,9 @@ const addTodo = async () => {
 
     let ref = collection(db, "todos");
     await addDoc(ref, {
-        // id: increment(1),
-        todo: todo.value
+        id: increment(1),
+        todo: todo.value,
+        timestamp: serverTimestamp()
     })
 
     // list.innerHTML += `<li>${todo.value}</li>`
@@ -63,7 +65,8 @@ let getTodos = () => {
         // list.innerHTML += `<li>${todo}</li>`
         // });
         snapshot.forEach((doc) => {
-            let { todo } = doc.data();
+            let { todo, timestamp } = doc.data();
+            console.log("timestamp", new Date(timestamp.toDate()));
             list.innerHTML += `<li>${todo} <button onclick="deleteTodo('${doc.id}')">Delete</button> <button onclick="updateTodo('${doc.id}')">Update</button> </li>`
         })
     });
