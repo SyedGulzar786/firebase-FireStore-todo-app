@@ -111,3 +111,4 @@ You can create a firebase.example.js with the same structure but fake keys for c
 
 This project is open source and available under the MIT License
 .
+

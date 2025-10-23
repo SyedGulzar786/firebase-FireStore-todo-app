@@ -6,7 +6,8 @@ import {
     collection,
     addDoc,
     increment,
-    onSnapshot
+    onSnapshot,
+    deleteDoc
 } from "./firebase.js"
 
 
@@ -51,8 +52,8 @@ let getTodos = () => {
         list.innerHTML = "";
         snapshot.docChanges().forEach((change) => {
             // console.log("change", change)
-            let { todo } = change.doc.data();
-            list.innerHTML += `<li>${todo}</li>`
+            // let { todo } = change.doc.data();
+            // list.innerHTML += `<li>${todo} <button onclick="deleteTodo('${change.doc.id}')">Delete</button> </li>`
             // console.log("change", change.doc.data())
             console.log("change", change.type)
         })
@@ -60,6 +61,18 @@ let getTodos = () => {
         // let { todo } = doc.data();
         // list.innerHTML += `<li>${todo}</li>`
         // });
+        snapshot.forEach((doc) => {
+            let { todo } = doc.data();
+            list.innerHTML += `<li>${todo} <button onclick="deleteTodo('${doc.id}')">Delete</button> </li>`
+        })
     });
 };
 getTodos();
+
+const deleteTodo = async (id) => {
+    await deleteDoc(doc(db, "todos", id));
+    console.log("Todo deleted successfully");
+    // console.log("Delete todo with id:", id);
+}
+
+window.deleteTodo = deleteTodo;
